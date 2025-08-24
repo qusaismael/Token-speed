@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Token Speed Visualizer</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="./styles.css" />
+	</head>
+	<body>
+		<div class="app">
+			<header class="header">
+				<h1>Token Speed Visualizer</h1>
+				<p class="subtitle">Watch how different processing speeds affect token generation in real time.</p>
+				<p class="tip">Tip: Set the default speed with <code>?speed=10</code> or <code>?speed=3.4</code> in the URL.</p>
+			</header>
+
+			<section class="controls">
+				<div class="control-group">
+					<label for="speedInput">Tokens per second</label>
+					<div class="number-input">
+						<input id="speedInput" type="number" min="0" max="200" step="0.1" inputmode="decimal" />
+					</div>
+				</div>
+				<div class="control-group stretch">
+					<label for="speedSlider" class="sr-only">Adjust tokens per second</label>
+					<input id="speedSlider" type="range" min="0" max="200" step="0.1" />
+				</div>
+				<div class="buttons">
+					<button id="toggleBtn" class="btn primary" aria-pressed="true">Pause</button>
+					<button id="resetBtn" class="btn ghost">Reset</button>
+				</div>
+			</section>
+
+			<section class="stats" aria-live="polite" aria-atomic="true">
+				<div class="stat">
+					<span class="label">Tokens per second</span>
+					<span class="value" id="tpsDisplay">0</span>
+				</div>
+				<div class="stat">
+					<span class="label">Time elapsed</span>
+					<span class="value" id="elapsedDisplay">0:00</span>
+				</div>
+				<div class="stat">
+					<span class="label">Words generated</span>
+					<span class="value" id="wordsDisplay">0</span>
+				</div>
+				<div class="stat">
+					<span class="label">Tokens generated</span>
+					<span class="value" id="tokensDisplay">0</span>
+				</div>
+			</section>
+
+			<section class="visualizer">
+				<canvas id="vizCanvas" aria-label="Token generation visualization"></canvas>
+			</section>
+
+			<section class="output">
+				<div class="output-header">
+					<h2>Generated text</h2>
+					<div class="output-actions">
+						<button id="copyBtn" class="btn ghost" title="Copy all">Copy</button>
+						<button id="clearBtn" class="btn ghost" title="Clear output">Clear</button>
+					</div>
+				</div>
+				<div id="outputBody" class="output-body" role="region" aria-live="polite" aria-atomic="false" aria-label="Generated text output">
+					<div id="outputText"></div><span class="caret" aria-hidden="true"></span>
+				</div>
+			</section>
+
+			<footer class="footer">
+				<p>Understanding token generation speed helps optimize timeouts and UX for LLM apps.</p>
+			</footer>
+		</div>
+		<script src="./script.js" defer></script>
+	</body>
+</html>
