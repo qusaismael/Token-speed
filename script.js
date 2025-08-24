@@ -249,18 +249,30 @@
 		ctx.restore();
 	}
 
-	// Input bindings
+	// Input bindings with enhanced UX
 	speedInput.addEventListener('input', () => {
 		const v = clamp(parseFloat(speedInput.value || '0'), 0, MAX_SPEED);
 		speed = isNaN(v) ? 0 : v;
 		syncInputs(speed);
 		updateUrlSpeedParam(speed);
+		// Add visual feedback
+		speedInput.style.transform = 'scale(1.02)';
+		setTimeout(() => { speedInput.style.transform = ''; }, 150);
 	});
+	
 	speedSlider.addEventListener('input', () => {
 		const v = clamp(parseFloat(speedSlider.value || '0'), 0, MAX_SPEED);
 		speed = isNaN(v) ? 0 : v;
 		syncInputs(speed);
 		updateUrlSpeedParam(speed);
+	});
+	
+	// Add smooth transitions for slider
+	speedSlider.addEventListener('mousedown', () => {
+		speedSlider.style.transition = 'none';
+	});
+	speedSlider.addEventListener('mouseup', () => {
+		speedSlider.style.transition = 'all 0.2s ease';
 	});
 
 	toggleBtn.addEventListener('click', () => {
@@ -268,21 +280,44 @@
 		toggleBtn.textContent = running ? 'Pause' : 'Resume';
 		toggleBtn.setAttribute('aria-pressed', String(running));
 		lastTime = performance.now();
+		
+		// Add visual feedback
+		toggleBtn.style.transform = 'scale(0.95)';
+		setTimeout(() => { toggleBtn.style.transform = ''; }, 150);
 	});
+	
 	resetBtn.addEventListener('click', () => {
 		reset();
+		// Add visual feedback
+		resetBtn.style.transform = 'scale(0.95)';
+		setTimeout(() => { resetBtn.style.transform = ''; }, 150);
 	});
+	
 	copyBtn?.addEventListener('click', async () => {
 		try {
 			await navigator.clipboard.writeText(outputText.textContent || '');
-			copyBtn.textContent = 'Copied';
+			const originalText = copyBtn.textContent;
+			copyBtn.textContent = '✓ Copied';
+			copyBtn.style.background = 'linear-gradient(135deg, var(--ok), #059669)';
+			copyBtn.style.color = 'white';
+			setTimeout(() => { 
+				copyBtn.textContent = originalText;
+				copyBtn.style.background = '';
+				copyBtn.style.color = '';
+			}, 1500);
+		} catch {
+			copyBtn.textContent = '✗ Failed';
 			setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1000);
-		} catch {}
+		}
 	});
+	
 	clearBtn?.addEventListener('click', () => {
 		outputText.textContent = '';
 		tokenIndex = 0;
 		positionCaret();
+		// Add visual feedback
+		clearBtn.style.transform = 'scale(0.95)';
+		setTimeout(() => { clearBtn.style.transform = ''; }, 150);
 	});
 
 	window.addEventListener('resize', () => { setCanvasSize(); positionCaret(); });
