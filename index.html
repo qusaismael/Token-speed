@@ -37,6 +37,19 @@
 				</div>
 			</section>
 
+			<section class="output">
+				<div class="output-header">
+					<h2>Generated text</h2>
+					<div class="output-actions">
+						<button id="copyBtn" class="btn ghost" title="Copy all">Copy</button>
+						<button id="clearBtn" class="btn ghost" title="Clear output">Clear</button>
+					</div>
+				</div>
+				<div id="outputBody" class="output-body" role="region" aria-live="polite" aria-atomic="false" aria-label="Generated text output">
+					<div id="outputText"></div><span class="caret" aria-hidden="true"></span>
+				</div>
+			</section>
+
 			<section class="stats" aria-live="polite" aria-atomic="true">
 				<div class="stat">
 					<span class="label">Tokens per second</span>
@@ -53,19 +66,6 @@
 				<div class="stat">
 					<span class="label">Tokens generated</span>
 					<span class="value" id="tokensDisplay">0</span>
-				</div>
-			</section>
-
-			<section class="output">
-				<div class="output-header">
-					<h2>Generated text</h2>
-					<div class="output-actions">
-						<button id="copyBtn" class="btn ghost" title="Copy all">Copy</button>
-						<button id="clearBtn" class="btn ghost" title="Clear output">Clear</button>
-					</div>
-				</div>
-				<div id="outputBody" class="output-body" role="region" aria-live="polite" aria-atomic="false" aria-label="Generated text output">
-					<div id="outputText"></div><span class="caret" aria-hidden="true"></span>
 				</div>
 			</section>
 
