@@ -24,7 +24,7 @@ A beautiful, interactive web application that visualizes token generation speed 
 - **Smooth Streaming**: Simulates realistic text streaming with proper word boundaries
 
 ### 🎛️ Advanced Controls
-- **Precise Speed Control**: Number input and slider for setting exact token speeds (0-200 TPS)
+- **Precise Speed Control**: Number input and slider for setting exact token speeds (0-1000 TPS)
 - **URL Parameters**: Set default speed via URL (`?speed=10` or `?speed=3.4`)
 - **Keyboard Shortcuts**: Space to pause/resume, 'R' to reset
 - **Smart Sync**: Input and slider stay synchronized automatically
@@ -57,7 +57,7 @@ Or simply open `index.html` directly in your browser for basic functionality.
 ## 📱 Usage
 
 ### Basic Controls
-1. **Speed Input**: Enter exact tokens per second (0-200)
+1. **Speed Input**: Enter exact tokens per second (0-1000)
 2. **Speed Slider**: Drag to adjust speed visually
 3. **Pause/Resume**: Click button or press Space
 4. **Reset**: Clear all data and restart
@@ -121,7 +121,7 @@ Edit CSS variables in `styles.css`:
 ### Speed Limits
 Modify in `script.js`:
 ```javascript
-const MAX_SPEED = 200;  // Maximum tokens per second
+const MAX_SPEED = 1000;  // Maximum tokens per second
 const DEFAULT_SPEED = 5; // Default startup speed
 ```
 

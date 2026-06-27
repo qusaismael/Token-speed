@@ -1,7 +1,7 @@
 (() => {
 	const TOKENS_PER_WORD = 1.2; // ~1.2 tokens per word (approx.)
 	const DEFAULT_SPEED = 5; // tokens/sec
-	const MAX_SPEED = 200;
+	const MAX_SPEED = 1000;
 
 	// Elements
 	const speedInput = document.getElementById('speedInput');
@@ -141,7 +141,11 @@
 		let appended = '';
 		for (let i = 0; i < n; i++) {
 			const word = tokens[tokenIndex % tokens.length];
-			appended += (outputText.textContent ? ' ' : '') + word;
+			if (appended || outputText.textContent) {
+				appended += ' ' + word;
+			} else {
+				appended += word;
+			}
 			tokenIndex++;
 		}
 		if (appended) {
