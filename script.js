@@ -18,6 +18,7 @@
 	const outputText = document.getElementById('outputText');
 	const canvas = document.getElementById('vizCanvas');
 	const ctx = canvas.getContext('2d');
+	const presetBtns = document.querySelectorAll('.btn-preset');
 
 	// State
 	let running = true;
@@ -75,6 +76,7 @@
 	}
 
 	function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+	function getSpeedStrength() { return clamp(Math.pow(speed / MAX_SPEED, 0.4), 0, 1); }
 
 	function updateUrlSpeedParam(value) {
 		const url = new URL(window.location.href);
@@ -86,6 +88,15 @@
 		speedInput.value = String(newSpeed);
 		speedSlider.value = String(newSpeed);
 		tpsDisplay.textContent = String(Number(newSpeed).toFixed(2));
+		if (presetBtns) {
+			presetBtns.forEach(btn => {
+				if (parseFloat(btn.dataset.speed) === Number(newSpeed)) {
+					btn.classList.add('active');
+				} else {
+					btn.classList.remove('active');
+				}
+			});
+		}
 	}
 
 	function reset() {
@@ -110,11 +121,14 @@
 	function spawnParticles(count) {
 		// Visualize tokens as glowing particles moving left->right
 		const rect = canvas.getBoundingClientRect();
+		const strength = getSpeedStrength();
 		for (let i = 0; i < count; i++) {
 			const y = Math.random() * rect.height;
 			const size = 2 + Math.random() * 3;
-			const speedPx = rect.width / (2.8 + Math.random() * 1.8); // complete cross in ~2.8-4.6s
-			const hue = 200 + Math.random() * 80; // blue-purple range
+			const speedFactor = 1 + strength * 1.5;
+			const speedPx = (rect.width / (2.8 + Math.random() * 1.8)) * speedFactor;
+			const hueBase = 220 - (strength * 220);
+			const hue = Math.max(0, hueBase + (Math.random() * 40 - 20));
 			particles.push({
 				x: -20,
 				y,
@@ -123,7 +137,7 @@
 				alpha: 0.12 + Math.random() * 0.2,
 				hue,
 				life: 0,
-				maxLife: 4 + Math.random() * 2
+				maxLife: (4 + Math.random() * 2) / Math.max(1, speedFactor * 0.8)
 			});
 		}
 	}
@@ -244,12 +258,17 @@
 			}
 		}
 
-		// Baseline indicator for current speed (subtle)
+		// Baseline indicator for current speed (subtle colored)
 		ctx.save();
-		ctx.globalAlpha = 0.4;
-		ctx.fillStyle = 'rgba(255,255,255,0.06)';
+		const visualStrength = getSpeedStrength();
+		const hueBase = 220 - (visualStrength * 220);
+		ctx.globalAlpha = 0.4 + (visualStrength * 0.2);
+		ctx.fillStyle = `hsla(${Math.max(0, hueBase)}, 90%, 60%, 0.15)`;
 		const strength = clamp(speed / MAX_SPEED, 0, 1);
 		ctx.fillRect(0, rect.height - 6 - strength * (rect.height - 12), rect.width, 6);
+		// Glow line
+		ctx.fillStyle = `hsla(${Math.max(0, hueBase)}, 90%, 65%, 0.4)`;
+		ctx.fillRect(0, rect.height - 4 - strength * (rect.height - 12), rect.width, 2);
 		ctx.restore();
 	}
 
@@ -278,6 +297,21 @@
 	speedSlider.addEventListener('mouseup', () => {
 		speedSlider.style.transition = 'all 0.2s ease';
 	});
+
+	if (presetBtns) {
+		presetBtns.forEach(btn => {
+			btn.addEventListener('click', () => {
+				const v = parseFloat(btn.dataset.speed);
+				speed = isNaN(v) ? DEFAULT_SPEED : v;
+				syncInputs(speed);
+				updateUrlSpeedParam(speed);
+				
+				// Visual feedback
+				btn.style.transform = 'scale(0.92)';
+				setTimeout(() => { btn.style.transform = ''; }, 150);
+			});
+		});
+	}
 
 	toggleBtn.addEventListener('click', () => {
 		running = !running;

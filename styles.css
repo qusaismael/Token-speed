@@ -186,6 +186,50 @@ body {
 	box-shadow: var(--shadow-lg), var(--glow);
 }
 
+.presets {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-top: 16px;
+	flex-wrap: wrap;
+}
+
+.presets-label {
+	font-weight: 600;
+	font-size: 13px;
+	color: var(--text-secondary);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.btn-preset {
+	background: var(--card);
+	border: 1px solid var(--border);
+	color: var(--text-secondary);
+	padding: 8px 16px;
+	border-radius: 20px;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	backdrop-filter: blur(8px);
+}
+
+.btn-preset:hover {
+	background: var(--card-hover);
+	border-color: var(--accent);
+	color: var(--text);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-preset.active {
+	background: linear-gradient(135deg, var(--accent), var(--accent-2));
+	color: white;
+	border-color: transparent;
+	box-shadow: 0 4px 15px var(--accent-glow);
+}
+
 .control-group {
 	display: grid;
 	grid-template-rows: auto auto;
