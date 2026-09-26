@@ -32,6 +32,7 @@
 					<button id="toggleBtn" class="btn primary" aria-pressed="true">Pause</button>
 					<button id="resetBtn" class="btn ghost">Reset</button>
 				</div>
+				<p id="simulation-status" role="status" aria-live="polite">Running</p>
 			</section>
 
 			<section class="presets" aria-label="Speed presets">
@@ -50,12 +51,12 @@
 						<button id="clearBtn" class="btn ghost" title="Clear output">Clear</button>
 					</div>
 				</div>
-				<div id="outputBody" class="output-body" role="region" aria-live="polite" aria-atomic="false" aria-label="Generated text output">
+				<div id="outputBody" class="output-body" role="region" aria-label="Generated text output">
 					<div id="outputText"></div><span class="caret" aria-hidden="true"></span>
 				</div>
 			</section>
 
-			<section class="stats" aria-live="polite" aria-atomic="true">
+			<section class="stats">
 				<div class="stat">
 					<span class="label">Tokens per second</span>
 					<span class="value" id="tpsDisplay">0</span>
