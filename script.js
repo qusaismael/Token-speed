@@ -317,6 +317,7 @@
 		running = !running;
 		toggleBtn.textContent = running ? 'Pause' : 'Resume';
 		toggleBtn.setAttribute('aria-pressed', String(running));
+		document.getElementById('simulation-status').textContent = running ? 'Running' : 'Paused';
 		lastTime = performance.now();
 		
 		// Add visual feedback
@@ -360,8 +361,11 @@
 
 	window.addEventListener('resize', () => { setCanvasSize(); positionCaret(); });
 	window.addEventListener('keydown', (e) => {
+		if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.repeat) return;
+		const target = e.target;
+		if (target?.isContentEditable || target?.closest?.('input, textarea, select, button, a, [role="textbox"]')) return;
 		if (e.code === 'Space') { e.preventDefault(); toggleBtn.click(); }
-		if (e.key.toLowerCase() === 'r') { reset(); }
+		else if (e.key.toLowerCase() === 'r') { e.preventDefault(); reset(); }
 	});
 
 	// Initialize
