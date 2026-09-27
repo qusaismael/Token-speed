@@ -76,6 +76,8 @@
 	}
 
 	function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+	function prefersReducedMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+	function isLightTheme() { return window.matchMedia('(prefers-color-scheme: light)').matches; }
 	function getSpeedStrength() { return clamp(Math.pow(speed / MAX_SPEED, 0.4), 0, 1); }
 
 	function updateUrlSpeedParam(value) {
@@ -119,6 +121,7 @@
 	}
 
 	function spawnParticles(count) {
+		if (prefersReducedMotion()) return;
 		// Visualize tokens as glowing particles moving left->right
 		const rect = canvas.getBoundingClientRect();
 		const strength = getSpeedStrength();
@@ -127,14 +130,15 @@
 			const size = 2 + Math.random() * 3;
 			const speedFactor = 1 + strength * 1.5;
 			const speedPx = (rect.width / (2.8 + Math.random() * 1.8)) * speedFactor;
-			const hueBase = 220 - (strength * 220);
-			const hue = Math.max(0, hueBase + (Math.random() * 40 - 20));
+			// brand ramp: cyan at low rates -> violet at max speed
+			const hueBase = 189 + strength * 68;
+			const hue = hueBase + (Math.random() * 24 - 12);
 			particles.push({
 				x: -20,
 				y,
 				size,
 				vx: speedPx,
-				alpha: 0.12 + Math.random() * 0.2,
+				alpha: 0.22 + Math.random() * 0.22,
 				hue,
 				life: 0,
 				maxLife: (4 + Math.random() * 2) / Math.max(1, speedFactor * 0.8)
@@ -214,9 +218,10 @@
 		ctx.clearRect(0, 0, rect.width, rect.height);
 
 		// Background subtle grid
+		const lightTheme = isLightTheme();
+		const lum = lightTheme ? 52 : 66;
 		ctx.save();
-		ctx.globalAlpha = 0.06;
-		ctx.strokeStyle = '#ffffff';
+		ctx.strokeStyle = lightTheme ? 'rgba(10, 20, 30, 0.08)' : 'rgba(255, 255, 255, 0.055)';
 		const grid = 28;
 		for (let x = 0; x < rect.width; x += grid) {
 			ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, rect.height); ctx.stroke();
@@ -227,6 +232,7 @@
 		ctx.restore();
 
 		// Particles
+		if (prefersReducedMotion()) particles.length = 0;
 		for (let i = particles.length - 1; i >= 0; i--) {
 			const p = particles[i];
 			p.x += p.vx * dt;
@@ -239,7 +245,7 @@
 
 			// glow trail
 			const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 4);
-			grad.addColorStop(0, `hsla(${p.hue}, 95%, 65%, ${alpha})`);
+			grad.addColorStop(0, `hsla(${p.hue}, 90%, ${lum}%, ${alpha})`);
 			grad.addColorStop(1, 'rgba(0,0,0,0)');
 			ctx.fillStyle = grad;
 			ctx.beginPath();
@@ -247,7 +253,7 @@
 			ctx.fill();
 
 			// core
-			ctx.fillStyle = `hsla(${p.hue}, 95%, 65%, ${Math.min(1, alpha * 2)})`;
+			ctx.fillStyle = `hsla(${p.hue}, 90%, ${lum}%, ${Math.min(1, alpha * 2)})`;
 			ctx.beginPath();
 			ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
 			ctx.fill();
@@ -261,13 +267,13 @@
 		// Baseline indicator for current speed (subtle colored)
 		ctx.save();
 		const visualStrength = getSpeedStrength();
-		const hueBase = 220 - (visualStrength * 220);
+		const hueBase = 189 + (visualStrength * 68);
 		ctx.globalAlpha = 0.4 + (visualStrength * 0.2);
-		ctx.fillStyle = `hsla(${Math.max(0, hueBase)}, 90%, 60%, 0.15)`;
+		ctx.fillStyle = `hsla(${hueBase}, 85%, ${lum - 6}%, 0.15)`;
 		const strength = clamp(speed / MAX_SPEED, 0, 1);
 		ctx.fillRect(0, rect.height - 6 - strength * (rect.height - 12), rect.width, 6);
 		// Glow line
-		ctx.fillStyle = `hsla(${Math.max(0, hueBase)}, 90%, 65%, 0.4)`;
+		ctx.fillStyle = `hsla(${hueBase}, 85%, ${lum}%, 0.4)`;
 		ctx.fillRect(0, rect.height - 4 - strength * (rect.height - 12), rect.width, 2);
 		ctx.restore();
 	}
