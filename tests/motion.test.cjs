@@ -25,6 +25,7 @@ function stubContext(reducedMotion, particles) {
   });
   return {
     prefersReducedMotion: () => reducedMotion,
+    isLightTheme: () => false,
     particles,
     canvas: { getBoundingClientRect: () => ({ width: 800, height: 300 }) },
     ctx,
