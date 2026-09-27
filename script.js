@@ -76,6 +76,7 @@
 	}
 
 	function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+	function prefersReducedMotion() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
 	function getSpeedStrength() { return clamp(Math.pow(speed / MAX_SPEED, 0.4), 0, 1); }
 
 	function updateUrlSpeedParam(value) {
@@ -119,6 +120,7 @@
 	}
 
 	function spawnParticles(count) {
+		if (prefersReducedMotion()) return;
 		// Visualize tokens as glowing particles moving left->right
 		const rect = canvas.getBoundingClientRect();
 		const strength = getSpeedStrength();
@@ -227,6 +229,7 @@
 		ctx.restore();
 
 		// Particles
+		if (prefersReducedMotion()) particles.length = 0;
 		for (let i = particles.length - 1; i >= 0; i--) {
 			const p = particles[i];
 			p.x += p.vx * dt;
